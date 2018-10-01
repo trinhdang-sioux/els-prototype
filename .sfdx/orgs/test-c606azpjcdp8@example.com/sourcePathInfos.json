@@ -315,19 +315,6 @@
         }
     ],
     [
-        "D:\\Project\\els-prototype\\force-app\\main\\default\\profiles\\Trial Customer Portal User.profile-meta.xml",
-        {
-            "state": "u",
-            "sourcePath": "D:\\Project\\els-prototype\\force-app\\main\\default\\profiles\\Trial Customer Portal User.profile-meta.xml",
-            "isDirectory": false,
-            "isMetadataFile": true,
-            "size": 1662,
-            "modifiedTime": 1538383272511,
-            "changeTime": 1538383272511,
-            "contentHash": "9924cac7584a1e9bb9634b284b08c335a1fcd2fa"
-        }
-    ],
-    [
         "D:\\Project\\els-prototype\\force-app\\main\\default\\objects\\Leave_Balance__c",
         {
             "state": "u",
