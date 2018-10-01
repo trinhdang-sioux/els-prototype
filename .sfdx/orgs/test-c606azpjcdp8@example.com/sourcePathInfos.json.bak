@@ -1,0 +1,257 @@
+[
+    [
+        "D:\\Project\\els-prototype\\force-app",
+        {
+            "state": "n",
+            "sourcePath": "D:\\Project\\els-prototype\\force-app",
+            "isDirectory": true,
+            "isMetadataFile": false,
+            "size": 0,
+            "modifiedTime": 1538378678413,
+            "changeTime": 1538378678413,
+            "contentHash": "b28b7af69320201d1cf206ebf28373980add1451",
+            "isWorkspace": false,
+            "isArtifactRoot": true
+        }
+    ],
+    [
+        "D:\\Project\\els-prototype\\force-app\\main",
+        {
+            "state": "n",
+            "sourcePath": "D:\\Project\\els-prototype\\force-app\\main",
+            "isDirectory": true,
+            "isMetadataFile": false,
+            "size": 0,
+            "modifiedTime": 1538378678413,
+            "changeTime": 1538378678413,
+            "contentHash": "7505d64a54e061b7acd54ccd58b49dc43500b635",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "D:\\Project\\els-prototype\\force-app\\main\\default",
+        {
+            "state": "n",
+            "sourcePath": "D:\\Project\\els-prototype\\force-app\\main\\default",
+            "isDirectory": true,
+            "isMetadataFile": false,
+            "size": 0,
+            "modifiedTime": 1538379252700,
+            "changeTime": 1538379252700,
+            "contentHash": "4f090b12d069ab492a48d0da355988187018b1a5",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "D:\\Project\\els-prototype\\force-app\\main\\default\\aura",
+        {
+            "state": "n",
+            "sourcePath": "D:\\Project\\els-prototype\\force-app\\main\\default\\aura",
+            "isDirectory": true,
+            "isMetadataFile": false,
+            "size": 0,
+            "modifiedTime": 1538378678413,
+            "changeTime": 1538378678413,
+            "contentHash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "D:\\Project\\els-prototype\\force-app\\main\\default\\layouts",
+        {
+            "state": "n",
+            "sourcePath": "D:\\Project\\els-prototype\\force-app\\main\\default\\layouts",
+            "isDirectory": true,
+            "isMetadataFile": false,
+            "size": 0,
+            "modifiedTime": 1538379252695,
+            "changeTime": 1538379252695,
+            "contentHash": "d0e5ef4b6e0c328169b866d6c5cd4e276d7fd994",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "D:\\Project\\els-prototype\\force-app\\main\\default\\layouts\\Leave_Request__c-Leave Request Layout.layout-meta.xml",
+        {
+            "state": "n",
+            "sourcePath": "D:\\Project\\els-prototype\\force-app\\main\\default\\layouts\\Leave_Request__c-Leave Request Layout.layout-meta.xml",
+            "isDirectory": false,
+            "isMetadataFile": true,
+            "size": 1947,
+            "modifiedTime": 1538379252695,
+            "changeTime": 1538379252695,
+            "contentHash": "11d783040f4136795b5cfb29705ebffa45e29dff",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "D:\\Project\\els-prototype\\force-app\\main\\default\\objects",
+        {
+            "state": "n",
+            "sourcePath": "D:\\Project\\els-prototype\\force-app\\main\\default\\objects",
+            "isDirectory": true,
+            "isMetadataFile": false,
+            "size": 0,
+            "modifiedTime": 1538379252688,
+            "changeTime": 1538379252688,
+            "contentHash": "9fef3bcf8d97f6c3dcd87f0c14de01b427316211",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "D:\\Project\\els-prototype\\force-app\\main\\default\\objects\\Leave_Request__c",
+        {
+            "state": "n",
+            "sourcePath": "D:\\Project\\els-prototype\\force-app\\main\\default\\objects\\Leave_Request__c",
+            "isDirectory": true,
+            "isMetadataFile": false,
+            "size": 0,
+            "modifiedTime": 1538379252691,
+            "changeTime": 1538379252691,
+            "contentHash": "8df3ce22e1b15a94f54d3dae34069c0ea49ad2eb",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "D:\\Project\\els-prototype\\force-app\\main\\default\\objects\\Leave_Request__c\\Leave_Request__c.object-meta.xml",
+        {
+            "state": "n",
+            "sourcePath": "D:\\Project\\els-prototype\\force-app\\main\\default\\objects\\Leave_Request__c\\Leave_Request__c.object-meta.xml",
+            "isDirectory": false,
+            "isMetadataFile": true,
+            "size": 2093,
+            "modifiedTime": 1538379252691,
+            "changeTime": 1538379252691,
+            "contentHash": "f391fc3de635a348452a1645fb462a10062cbe50",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "D:\\Project\\els-prototype\\force-app\\main\\default\\profiles",
+        {
+            "state": "n",
+            "sourcePath": "D:\\Project\\els-prototype\\force-app\\main\\default\\profiles",
+            "isDirectory": true,
+            "isMetadataFile": false,
+            "size": 0,
+            "modifiedTime": 1538379252723,
+            "changeTime": 1538379252723,
+            "contentHash": "9c367b0e719eb8c48c5b0d9cbfb5f580a4bd6717",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "D:\\Project\\els-prototype\\force-app\\main\\default\\profiles\\Admin.profile-meta.xml",
+        {
+            "state": "n",
+            "sourcePath": "D:\\Project\\els-prototype\\force-app\\main\\default\\profiles\\Admin.profile-meta.xml",
+            "isDirectory": false,
+            "isMetadataFile": true,
+            "size": 18198,
+            "modifiedTime": 1538379252717,
+            "changeTime": 1538379252717,
+            "contentHash": "fb12f7609c7bb4c6dc62bece7c74039078bebbe4",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "D:\\Project\\els-prototype\\force-app\\main\\default\\profiles\\Custom%3A Marketing Profile.profile-meta.xml",
+        {
+            "state": "n",
+            "sourcePath": "D:\\Project\\els-prototype\\force-app\\main\\default\\profiles\\Custom%3A Marketing Profile.profile-meta.xml",
+            "isDirectory": false,
+            "isMetadataFile": true,
+            "size": 4442,
+            "modifiedTime": 1538379252706,
+            "changeTime": 1538379252706,
+            "contentHash": "da39984ba492114bbbdb3ac62b056d006d8541d4",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "D:\\Project\\els-prototype\\force-app\\main\\default\\profiles\\Custom%3A Sales Profile.profile-meta.xml",
+        {
+            "state": "n",
+            "sourcePath": "D:\\Project\\els-prototype\\force-app\\main\\default\\profiles\\Custom%3A Sales Profile.profile-meta.xml",
+            "isDirectory": false,
+            "isMetadataFile": true,
+            "size": 4442,
+            "modifiedTime": 1538379252702,
+            "changeTime": 1538379252702,
+            "contentHash": "da39984ba492114bbbdb3ac62b056d006d8541d4",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "D:\\Project\\els-prototype\\force-app\\main\\default\\profiles\\Custom%3A Support Profile.profile-meta.xml",
+        {
+            "state": "n",
+            "sourcePath": "D:\\Project\\els-prototype\\force-app\\main\\default\\profiles\\Custom%3A Support Profile.profile-meta.xml",
+            "isDirectory": false,
+            "isMetadataFile": true,
+            "size": 4780,
+            "modifiedTime": 1538379252723,
+            "changeTime": 1538379252723,
+            "contentHash": "b90829496ecf36c81143b208f986b7d0c9e1d983",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "D:\\Project\\els-prototype\\force-app\\main\\default\\tabs",
+        {
+            "state": "n",
+            "sourcePath": "D:\\Project\\els-prototype\\force-app\\main\\default\\tabs",
+            "isDirectory": true,
+            "isMetadataFile": false,
+            "size": 0,
+            "modifiedTime": 1538379252698,
+            "changeTime": 1538379252698,
+            "contentHash": "9677b658d08f4c2c5d3956b8eca21d6e47b43830",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "D:\\Project\\els-prototype\\force-app\\main\\default\\tabs\\Leave_Request__c.tab-meta.xml",
+        {
+            "state": "n",
+            "sourcePath": "D:\\Project\\els-prototype\\force-app\\main\\default\\tabs\\Leave_Request__c.tab-meta.xml",
+            "isDirectory": false,
+            "isMetadataFile": true,
+            "size": 223,
+            "modifiedTime": 1538379252698,
+            "changeTime": 1538379252698,
+            "contentHash": "b02a681f008b727f20c925eeb577f652ec2a70cf",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "D:\\Project\\els-prototype",
+        {
+            "state": "n",
+            "sourcePath": "D:\\Project\\els-prototype",
+            "isDirectory": true,
+            "isMetadataFile": false,
+            "size": 0,
+            "modifiedTime": 1538380555846,
+            "changeTime": 1538380555846,
+            "contentHash": "dfd2caf38894195cca9f8707d97bb59b033005d2",
+            "isWorkspace": true,
+            "isArtifactRoot": false
+        }
+    ]
+]
