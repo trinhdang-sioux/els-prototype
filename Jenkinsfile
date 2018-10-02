@@ -25,10 +25,11 @@ node {
             if (rc != 0) { error 'hub org authorization failed' }
 
             // need to pull out assigned username
-            rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:org:create --definitionfile config/project-scratch-def.json --json --setdefaultusername"
-            rmsg = rmsg.readLines().drop(1).join(" ")
-            echo rmsg
-            def robj = readJSON text: rmsg;
+            stdout = bat(returnStdout: true, script: "\"${toolbelt}\" force:org:create --definitionfile config/project-scratch-def.json --json --setdefaultusername").trim()
+            echo stdout
+            result = stdout.readLines().drop(1).join(" ")
+            echo result
+            def robj = readJSON text: result;
             if (robj.status != 0) { error 'org creation failed: ' + robj.message }
             SFDC_USERNAME=robj.result.username
             robj = null
