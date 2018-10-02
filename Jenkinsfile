@@ -26,7 +26,7 @@ node {
 
             // need to pull out assigned username
             rmsg = bat returnStdout: true, script: "\"${toolbelt}\" force:org:create --definitionfile config/project-scratch-def.json --json --setdefaultusername"
-            printf rmsg
+            rmsg = rmsg.readLines().drop(1).join(" ")
             echo rmsg
             def robj = readJSON text: rmsg;
             if (robj.status != 0) { error 'org creation failed: ' + robj.message }
