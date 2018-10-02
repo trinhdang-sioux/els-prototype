@@ -65,7 +65,11 @@ node {
             if (rc != 0) { error 'delete failed' }
         }
         failure {
-            mail to: trinh.dang@sioux.asia, subject: 'Build failed'
+            emailext (
+                subject: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+                body: """<p>FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
+                <p>Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>"</p>""",
+                recipientProviders: [[$class: 'DevelopersRecipientProvider']])
         }
     }
 }
