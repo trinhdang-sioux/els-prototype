@@ -44,9 +44,6 @@ pipeline {
         }
 
         stage('build and test') {
-            environment {
-                
-            }
             stages {
                 stage('authorize dev hub org') {
                     steps {
