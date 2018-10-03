@@ -1,3 +1,14 @@
+#!groovy
+def BUILD_NUMBER=env.BUILD_NUMBER
+def ARTIFACT_DIR = "Builds\\${BUILD_NUMBER}"
+def SFDC_USERNAME = ""
+def HUB_ORG = env.HUB_ORG_DH
+def SFDC_HOST = env.SFDC_HOST_DH
+def JWT_KEY_CRED_ID = env.JWT_CRED_ID_DH
+def CONNECTED_APP_CONSUMER_KEY = env.CONNECTED_APP_CONSUMER_KEY_DH
+
+def toolbelt = tool 'toolbelt'
+
 pipeline {
     agent any
 
@@ -6,13 +17,7 @@ pipeline {
     }
 
     environment {
-        ARTIFACT_DIR = "Builds\\${env.BUILD_NUMBER}"
 
-        SFDC_USERNAME
-        HUB_ORG=env.HUB_ORG_DH
-        SFDC_HOST = env.SFDC_HOST_DH
-        JWT_KEY_CRED_ID = env.JWT_CRED_ID_DH
-        CONNECTED_APP_CONSUMER_KEY=env.CONNECTED_APP_CONSUMER_KEY_DH
     }
 
     tools {
