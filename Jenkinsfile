@@ -8,22 +8,14 @@ pipeline {
     }
 
     environment {
-        OUTPUT_DIR = "Builds\\${env.BUILD_NUMBER}"
+        BUILD_NUMBER = "${env.BUILD_NUMBER}"
+        COMMIT_NUMBER = ""
+
+        OUTPUT_DIR = "Builds\\${BUILD_NUMBER}"
         OUTPUT_TEST = "${OUTPUT_DIR}\\tests"
         OUTPUT_ARTIFACT = "${OUTPUT_DIR}\\artifacts"
 
-        SFDC_USERNAME = ""
-        HUB_ORG = "${env.HUB_ORG_DH}"
-        SFDC_HOST = "${env.SFDC_HOST_DH}"
-        CONNECTED_APP_CONSUMER_KEY = "${env.CONNECTED_APP_CONSUMER_KEY_DH}"
-        CONNECTED_APP_JWT_KEY = credentials("${env.JWT_CRED_ID_DH}")
-
         sfdx = "C:\\Program Files\\Salesforce CLI\\bin\\sfdx"
-
-        PACKAGE_DIR = "mdapi_output_dir"
-        PACKAGE_NAME = "els-protoype"
-
-        GIT_COMMIT = ""
     }
 
     stages {
@@ -31,10 +23,7 @@ pipeline {
             steps {
                 script {
                     scmVars = checkout scm
-                    GIT_COMMIT = scmVars.GIT_COMMIT
-                    echo scmVars
-                    echo scmVars.GIT_COMMIT
-                    echo "${env.GIT_COMMIT}"
+                    COMMIT_NUMBER = scmVars.GIT_COMMIT
                 }
             }
         }
@@ -49,8 +38,17 @@ pipeline {
         }
 
         stage('build and test') {
+            environment {
+                SFDC_USERNAME = ""
+            }
             stages {
                 stage('authorize dev hub org') {
+                    environment {
+                        HUB_ORG = "${env.HUB_ORG_DH}"
+                        SFDC_HOST = "${env.SFDC_HOST_DH}"
+                        CONNECTED_APP_CONSUMER_KEY = "${env.CONNECTED_APP_CONSUMER_KEY_DH}"
+                        CONNECTED_APP_JWT_KEY = credentials("${env.JWT_CRED_ID_DH}")
+                    }
                     steps {
                         script {
                             status = bat returnStatus: true, script: "\"${sfdx}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile \"${CONNECTED_APP_JWT_KEY}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
@@ -117,6 +115,11 @@ pipeline {
         }
 
         stage('package') {
+            environment {
+                PACKAGE_DIR = "mdapi_output_dir"
+                PACKAGE_NAME = "els-protoype"
+                PACKAGE_ZIP = "${OUTPUT_ARTIFACT}\\${COMMIT_NUMBER}.${BUILD_NUMBER}.zip"
+            }
             steps {
                 script {
                     status = bat returnStatus: true, script: "sfdx force:source:convert -d ${PACKAGE_DIR}/ --packagename ${PACKAGE_NAME}"
@@ -124,7 +127,7 @@ pipeline {
                         error 'package failed'
                     }
                     bat script: "dir /s /b mdapi_output_dir"
-                    zip zipFile: "${OUTPUT_ARTIFACT}\\${env.GIT_COMMIT}.${env.BUILD_NUMBER}.zip", archive: false, dir: "${PACKAGE_DIR}"
+                    zip zipFile: "${PACKAGE_ZIP}", archive: false, dir: "${PACKAGE_DIR}"
                 }
             }
         }
