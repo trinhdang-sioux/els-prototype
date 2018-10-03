@@ -31,18 +31,20 @@ pipeline {
             }
         }
 
-        withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
-            stage('Authorize DEV HUB org') {
-                steps {
+        stage('Authorize DEV HUB org') {
+            steps {
+                withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
                     status = bat(returnStatus: true, script: "\"${toolbelt}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile \"${jwt_key_file}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}")
                     if (status != 0) {
                         error 'Authorize DEV HUB org failed'
                     }
                 }
             }
+        }
 
-            stage('Create SCRATCH org') {
-                steps {
+        stage('Create SCRATCH org') {
+            steps {
+                withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
                     stdout = bat(returnStdout: true, script: "\"${toolbelt}\" force:org:create --definitionfile config/project-scratch-def.json --json --setdefaultusername").trim()
                     stdout = stdout.readLines().drop(1).join(" ")
                     def robj = readJSON text: result;
@@ -53,12 +55,14 @@ pipeline {
                     robj = null
                 }
             }
+        }
 
-            stage('Push to SCRATCH org') {
-                steps {
+        stage('Push to SCRATCH org') {
+            steps {
+                withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
                     status = bat(returnStatus: true, script: "\"${toolbelt}\" force:source:push --targetusername ${SFDC_USERNAME}")
                     if (status != 0) {
-                         error 'push failed'
+                            error 'push failed'
                     }
                     status = bat(returnStatus: true, script: "\"${toolbelt}\" force:user:permset:assign --targetusername ${SFDC_USERNAME} --permsetname ELS")
                     if (status != 0) {
@@ -66,9 +70,11 @@ pipeline {
                     }
                 }
             }
+        }
 
-            stage('Run APEX tests') {
-                steps {
+        stage('Run APEX tests') {
+            steps {
+                withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
                     status = bat(returnStatus: true, script: "mkdir ${ARTIFACT_DIR}")
                     if(status != 0) {
                         error "Run APEX tests failed: cannot create artifact dir ${ARTIFACT_DIR}"
@@ -81,19 +87,11 @@ pipeline {
                     }
                 }
             }
-
-            stage('Deploy to STAGING') {
-                steps {
-                    echo 'Deploying...'
-                }
-            }
         }
-        post {
-            always {
-                status = bat(returnStatus: true, script: "\"${toolbelt}\" force:org:delete --targetusername ${SFDC_USERNAME} -p")
-                if (rc != 0) { 
-                    error 'Cleanup SCRATCH org failed'
-                }
+
+        stage('Deploy to STAGING') {
+            steps {
+                echo 'Deploying...'
             }
         }
 
@@ -104,11 +102,17 @@ pipeline {
         }
     }
     post {
+        always {
+            status = bat(returnStatus: true, script: "\"${toolbelt}\" force:org:delete --targetusername ${SFDC_USERNAME} -p")
+            if (rc != 0) { 
+                echo 'Cleanup SCRATCH org failed'
+            }
+        }
         failure {
             // notify users when the Pipeline fails
             mail to: 'trinh.dang@sioux.asia',
             subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
             body: "Something is wrong with ${env.BUILD_URL}"
-            }
+        }
     }
 }
