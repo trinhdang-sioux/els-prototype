@@ -25,20 +25,21 @@ pipeline {
     }
 
     stages {
+        stage('create output dir') {
+            steps {
+                script {
+                    deleteDir()
+                    bat script: "mkdir ${OUTPUT_TEST}"
+                    bat script: "mkdir ${OUTPUT_ARTIFACT}"
+                }
+            }
+        }
+
         stage('checkout SCM') {
             steps {
                 script {
                     scmVars = checkout scm
                     COMMIT_NUMBER = scmVars.GIT_COMMIT
-                }
-            }
-        }
-
-        stage('create output dir') {
-            steps {
-                script {
-                    bat returnStatus: true, script: "mkdir ${OUTPUT_TEST}"
-                    bat returnStatus: true, script: "mkdir ${OUTPUT_ARTIFACT}"
                 }
             }
         }
@@ -161,11 +162,6 @@ pipeline {
                 to: "khoa.nguyen@sioux.asia",
                 recipientProviders: [[$class: 'DevelopersRecipientProvider']]
             )
-        }
-        cleanup {
-            script {
-                cleanWs
-            }
         }
     }
 }
