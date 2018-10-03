@@ -13,9 +13,8 @@ pipeline {
         SFDC_USERNAME = ""
         HUB_ORG = "${env.HUB_ORG_DH}"
         SFDC_HOST = "${env.SFDC_HOST_DH}"
-        JWT_KEY_CRED_ID = "${env.JWT_CRED_ID_DH}"
         CONNECTED_APP_CONSUMER_KEY = "${env.CONNECTED_APP_CONSUMER_KEY_DH}"
-        CONNECTED_APP_JWT_KEY = credentials('SALESFORCE_PRIVATE_KEY')
+        CONNECTED_APP_JWT_KEY = credentials("${env.JWT_CRED_ID_DH}")
 
         sfdx = "C:\\Program Files\\Salesforce CLI\\bin\\sfdx"
     }
