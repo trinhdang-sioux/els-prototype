@@ -15,10 +15,6 @@ pipeline {
         TOOL = tool name: 'toolbelt', type: 'com.cloudbees.jenkins.plugins.customtools.CustomTool'
     }
 
-    tools {
-        
-    }
-
     stages {
         stage('Checkout SCM') {
             steps {
