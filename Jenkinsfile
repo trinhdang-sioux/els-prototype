@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        ARTIFACT_DIR = "Builds\\$(BUILD_NUMBER)"
+        ARTIFACT_DIR = "Builds\\${env.BUILD_NUMBER}"
 
         SFDC_USERNAME
         HUB_ORG=env.HUB_ORG_DH
