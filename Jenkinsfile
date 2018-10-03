@@ -9,7 +9,7 @@ pipeline {
 
     environment {
         ARTIFACT_DIR = "Builds\\${env.BUILD_NUMBER}"
-        
+
         SFDC_USERNAME = ""
         HUB_ORG = "${env.HUB_ORG_DH}"
         SFDC_HOST = "${env.SFDC_HOST_DH}"
@@ -26,15 +26,14 @@ pipeline {
             }
         }
 
-        stage('Build and test') {
+        stage('Salesforce build and test') {
             stages {
                 stage('Authorize DEV HUB org') {
                     steps {
-                        echo 'Authorizing...'
                         script {
                             status = bat(returnStatus: true, script: "\"${sfdx}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile \"${CONNECTED_APP_JWT_KEY}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}")
                             if (status != 0) {
-                                error 'Authorize DEV HUB org failed'
+                                error 'Org authorization failed'
                             }
                         }
                     }
@@ -42,13 +41,12 @@ pipeline {
 
                 stage('Create SCRATCH org') {
                     steps {
-                        echo 'Creating...'
                         script {
                             stdout = bat(returnStdout: true, script: "\"${sfdx}\" force:org:create --definitionfile config/project-scratch-def.json --json --setdefaultusername").trim()
                             stdout = stdout.readLines().drop(1).join(" ")
                             def robj = readJSON text: stdout;
                             if (robj.status != 0) {
-                                error 'Create SCRATCH org failed: ' + robj.message
+                                error 'Org creation failed: ' + robj.message
                             }
                             SFDC_USERNAME=robj.result.username
                             robj = null
@@ -58,19 +56,38 @@ pipeline {
 
                 stage('Push to SCRATCH org') {
                     steps {
-                        echo 'Push to SCRATCH org'
+                        script {
+                            status = bat(returnStatus: true, script: "\"${sfdx}\" force:source:push --targetusername ${SFDC_USERNAME}")
+                            if (status != 0) {
+                                    error 'Org push failed'
+                            }
+                            status = bat(returnStatus: true, script: "\"${sfdx}\" force:user:permset:assign --targetusername ${SFDC_USERNAME} --permsetname ELS")
+                            if (status != 0) {
+                                error 'Org permset:assign failed'
+                            }
+                        }
                     }
                 }
 
                 stage('Run APEX tests') {
                     steps {
-                        echo 'Run APEX tests'
+                        script {
+                            status = bat(returnStatus: true, script: "mkdir ${ARTIFACT_DIR}")
+                            if(status != 0) {
+                                error "Run APEX tests failed: cannot create artifact dir ${ARTIFACT_DIR}"
+                            }
+                            timeout(time: 120, unit: 'SECONDS') {
+                                rc = bat(returnStatus: true, script: "\"${toolbelt}\" force:apex:test:run --testlevel RunLocalTests --outputdir ${ARTIFACT_DIR} --resultformat tap --targetusername ${SFDC_USERNAME}")
+                                if (rc != 0) {
+                                    error 'Run APEX tests failed'
+                                }
+                            }
+                        }
                     }
                 }
             }
             post {
                 always {
-                    echo 'Cleaning up...'
                     script {
                         status = bat(returnStatus: true, script: "\"${sfdx}\" force:org:delete --targetusername ${SFDC_USERNAME} -p")
                         if (status != 0) { 
