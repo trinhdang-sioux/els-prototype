@@ -115,7 +115,7 @@ pipeline {
                     if(status != 0) {
                         error 'package failed'
                     }
-                    bat script: "dir /s /b mdapi_output_dir/"
+                    bat script: "dir /s /b mdapi_output_dir"
                     status = zip zipFile: "${OUTPUT_DIR}\\${env.BUILD_NUMBER}.zip", archive: false, dir: "${PACKAGE_DIR}"
                     if(status != 0) {
                         error 'package failed'
