@@ -11,10 +11,12 @@ pipeline {
         ARTIFACT_DIR = "Builds\\${env.BUILD_NUMBER}"
 
         HUB_ORG = "${env.HUB_ORG_DH}"
+
+        TOOL = tool name: 'toolbelt', type: 'com.cloudbees.jenkins.plugins.customtools.CustomTool'
     }
 
     tools {
-        toolbelt 'toolbelt'
+        
     }
 
     stages {
@@ -72,7 +74,7 @@ pipeline {
     }
     post {
         always {
-            
+            echo 'Post always'
         }
         failure {
             // notify users when the Pipeline fails
