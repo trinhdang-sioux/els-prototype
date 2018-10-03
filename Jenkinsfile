@@ -15,6 +15,12 @@ pipeline {
         OUTPUT_TEST = "${OUTPUT_DIR}\\tests"
         OUTPUT_ARTIFACT = "${OUTPUT_DIR}\\artifacts"
 
+        HUB_ORG = "${env.HUB_ORG_DH}"
+        SFDC_HOST = "${env.SFDC_HOST_DH}"
+        CONNECTED_APP_CONSUMER_KEY = "${env.CONNECTED_APP_CONSUMER_KEY_DH}"
+        CONNECTED_APP_JWT_KEY = credentials("${env.JWT_CRED_ID_DH}")
+        SFDC_USERNAME = ""
+
         sfdx = "C:\\Program Files\\Salesforce CLI\\bin\\sfdx"
     }
 
@@ -39,16 +45,10 @@ pipeline {
 
         stage('build and test') {
             environment {
-                SFDC_USERNAME = ""
+                
             }
             stages {
                 stage('authorize dev hub org') {
-                    environment {
-                        HUB_ORG = "${env.HUB_ORG_DH}"
-                        SFDC_HOST = "${env.SFDC_HOST_DH}"
-                        CONNECTED_APP_CONSUMER_KEY = "${env.CONNECTED_APP_CONSUMER_KEY_DH}"
-                        CONNECTED_APP_JWT_KEY = credentials("${env.JWT_CRED_ID_DH}")
-                    }
                     steps {
                         script {
                             status = bat returnStatus: true, script: "\"${sfdx}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile \"${CONNECTED_APP_JWT_KEY}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
