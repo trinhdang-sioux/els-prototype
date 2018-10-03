@@ -35,19 +35,19 @@ pipeline {
 
                 stage('Create SCRATCH org') {
                     steps {
-
+                        echo 'Create SCRATCH org'
                     }
                 }
 
                 stage('Push to SCRATCH org') {
                     steps {
-
+                        echo 'Push to SCRATCH org'
                     }
                 }
 
                 stage('Run APEX tests') {
                     steps {
-
+                        echo 'Run APEX tests'
                     }
                 }
             }
@@ -60,7 +60,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-
+                echo 'Deploy here'
             }
         }
 
