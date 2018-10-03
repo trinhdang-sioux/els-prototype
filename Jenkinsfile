@@ -10,7 +10,7 @@ pipeline {
     environment {
         OUTPUT_DIR = "Builds\\${env.BUILD_NUMBER}"
         OUTPUT_TEST = "${OUTPUT_DIR}\\tests"
-        OUTPUT_ARTIFACT = "${OUTPUT_DIR}\\package.${env.GIT_REVISION}.${env.BUILD_NUMBER}.zip"
+        OUTPUT_ARTIFACT = "${OUTPUT_DIR}\\artifacts"
 
         SFDC_USERNAME = ""
         HUB_ORG = "${env.HUB_ORG_DH}"
@@ -22,22 +22,23 @@ pipeline {
 
         PACKAGE_DIR = "mdapi_output_dir"
         PACKAGE_NAME = "els-protoype"
+
+        GIT_COMMIT = ""
     }
 
     stages {
         stage('checkout SCM') {
             steps {
-                checkout scm
+                scmVars = checkout scm
+                GIT_COMMIT = scmVars.GIT_COMMIT
             }
         }
 
         stage('create output dir') {
             steps {
                 script {
-                    status = bat returnStatus: true, script: "mkdir ${OUTPUT_TEST}"
-                    if(status != 0) {
-                        error "dir creation failed ${OUTPUT_TEST}"
-                    }
+                    bat returnStatus: true, script: "mkdir ${OUTPUT_TEST}"
+                    bat returnStatus: true, script: "mkdir ${OUTPUT_ARTIFACT}"
                 }
             }
         }
@@ -118,7 +119,7 @@ pipeline {
                         error 'package failed'
                     }
                     bat script: "dir /s /b mdapi_output_dir"
-                    zip zipFile: "${OUTPUT_ARTIFACT}", archive: false, dir: "${PACKAGE_DIR}"
+                    zip zipFile: "${OUTPUT_ARTIFACT}\\${env.GIT_COMMIT}.${env.BUILD_NUMBER}.zip", archive: false, dir: "${PACKAGE_DIR}"
                 }
             }
         }
@@ -132,7 +133,7 @@ pipeline {
 
         stage('collect reports') {
             steps {
-                archiveArtifacts artifacts: "${OUTPUT_ARTIFACT}", fingerprint: true
+                archiveArtifacts artifacts: "${OUTPUT_ARTIFACT}/*.*", fingerprint: true
                 junit keepLongStdio: true, testResults: "${OUTPUT_DIR}/**/*-junit.xml"
             }
         }
