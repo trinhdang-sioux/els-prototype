@@ -13,6 +13,7 @@ pipeline {
 
         OUTPUT_DIR = "Builds\\${BUILD_NUMBER}"
         OUTPUT_TEST = "${OUTPUT_DIR}\\tests"
+        OUTPUT_REPORT = "${OUTPUT_DIR}\\coverage"
         OUTPUT_ARTIFACT = "${OUTPUT_DIR}\\artifacts"
 
         HUB_ORG = "${env.HUB_ORG_DH}"
@@ -149,7 +150,7 @@ pipeline {
                 allowMissing: false,
                 alwaysLinkToLastBuild: false,
                 keepAll: true,
-                reportDir: 'coverage',
+                reportDir: "${OUTPUT_REPORT}",
                 reportFiles: 'index.html',
                 reportName: 'RCov Report'
                 ]
