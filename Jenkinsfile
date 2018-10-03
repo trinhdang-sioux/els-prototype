@@ -42,7 +42,17 @@ pipeline {
 
                 stage('Create SCRATCH org') {
                     steps {
-                        echo 'Create SCRATCH org'
+                        echo 'Creating...'
+                        script {
+                            stdout = bat(returnStdout: true, script: "\"${sfdx}\" force:org:create --definitionfile config/project-scratch-def.json --json --setdefaultusername").trim()
+                            stdout = stdout.readLines().drop(1).join(" ")
+                            def robj = readJSON text: result;
+                            if (robj.status != 0) {
+                                error 'Create SCRATCH org failed: ' + robj.message
+                            }
+                            SFDC_USERNAME=robj.result.username
+                            robj = null
+                        }
                     }
                 }
 
@@ -60,7 +70,13 @@ pipeline {
             }
             post {
                 always {
-                    echo 'Cleanup org here'
+                    echo 'Cleaning up...'
+                    script {
+                        status = bat(returnStatus: true, script: "\"${sfdx}\" force:org:delete --targetusername ${SFDC_USERNAME} -p")
+                        if (status != 0) { 
+                            echo 'Cleanup failed'
+                        }
+                    }
                 }
             }
         }
