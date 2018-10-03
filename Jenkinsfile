@@ -91,7 +91,7 @@ pipeline {
                     script {
                         status = bat(returnStatus: true, script: "\"${sfdx}\" force:org:delete --targetusername ${SFDC_USERNAME} -p")
                         if (status != 0) { 
-                            echo 'Cleanup failed'
+                            error 'Cleanup failed'
                         }
                     }
                 }
@@ -100,13 +100,13 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                echo 'Deploy here'
+                echo 'Deploying to STAGING...'
             }
         }
 
-        stage('Collect Reports') {
+        stage('Collect reports') {
             steps {
-                junit keepLongStdio: true, testResults: 'tests/**/*-junit.xml'
+                junit keepLongStdio: true, testResults: 'Builds/**/*-junit.xml'
             }
         }
     }
