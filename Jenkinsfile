@@ -144,6 +144,16 @@ pipeline {
         }
     }
     post {
+        always {
+            publishHTML target: [
+                allowMissing: false,
+                alwaysLinkToLastBuild: false,
+                keepAll: true,
+                reportDir: 'coverage',
+                reportFiles: 'index.html',
+                reportName: 'RCov Report'
+                ]
+        }
         success {
             emailext (
                 subject: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
