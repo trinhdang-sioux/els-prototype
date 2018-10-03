@@ -77,7 +77,7 @@ pipeline {
                                 error "Run APEX tests failed: cannot create artifact dir ${ARTIFACT_DIR}"
                             }
                             timeout(time: 120, unit: 'SECONDS') {
-                                rc = bat(returnStatus: true, script: "\"${toolbelt}\" force:apex:test:run --testlevel RunLocalTests --outputdir ${ARTIFACT_DIR} --resultformat tap --targetusername ${SFDC_USERNAME}")
+                                rc = bat(returnStatus: true, script: "\"${sfdx}\" force:apex:test:run --testlevel RunLocalTests --outputdir ${ARTIFACT_DIR} --resultformat tap --targetusername ${SFDC_USERNAME}")
                                 if (rc != 0) {
                                     error 'Run APEX tests failed'
                                 }
