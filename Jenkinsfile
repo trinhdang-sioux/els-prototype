@@ -13,7 +13,6 @@ pipeline {
 
         OUTPUT_DIR = "Builds\\${BUILD_NUMBER}"
         OUTPUT_TEST = "${OUTPUT_DIR}\\tests"
-        OUTPUT_REPORT = "${OUTPUT_DIR}\\coverage"
         OUTPUT_ARTIFACT = "${OUTPUT_DIR}\\artifacts"
 
         HUB_ORG = "${env.HUB_ORG_DH}"
@@ -146,21 +145,14 @@ pipeline {
     }
     post {
         always {
-            publishHTML target: [
-                allowMissing: false,
-                alwaysLinkToLastBuild: false,
-                keepAll: true,
-                reportDir: "${OUTPUT_TEST}",
-                reportFiles: 'index.html',
-                reportName: 'RCov Report'
-                ]
+            echo 'Code coverage'
         }
         success {
             emailext (
                 subject: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
                 body: """<p>SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
                 <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""",
-                to: "trinh.dang@sioux.asia",
+                to: "khoa.nguyen@sioux.asia",
                 recipientProviders: [[$class: 'DevelopersRecipientProvider']]
             )
         }
@@ -169,7 +161,7 @@ pipeline {
                 subject: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
                 body: """<p>FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
                 <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""",
-                to: "trinh.dang@sioux.asia",
+                to: "khoa.nguyen@sioux.asia",
                 recipientProviders: [[$class: 'DevelopersRecipientProvider']]
             )
         }
