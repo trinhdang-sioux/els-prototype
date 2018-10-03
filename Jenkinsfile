@@ -65,7 +65,7 @@ pipeline {
                             if (robj.status != 0) {
                                 error 'Org creation failed: ' + robj.message
                             }
-                            SFDC_USERNAME=robj.result.username
+                            SFDC_USERNAME = robj.result.username
                             robj = null
                         }
                     }
@@ -144,11 +144,21 @@ pipeline {
         }
     }
     post {
-        always {
-            echo 'Post always'
+        success {
+            emailext (
+                subject: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+                body: """<p>SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
+                <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""",
+                recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+                )
         }
         failure {
-            echo 'Email'
+            emailext (
+                subject: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+                body: """<p>FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
+                <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""",
+                recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+        )
         }
     }
 }
