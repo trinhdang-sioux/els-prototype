@@ -32,6 +32,9 @@ pipeline {
                 script {
                     scmVars = checkout scm
                     GIT_COMMIT = scmVars.GIT_COMMIT
+                    echo scmVars
+                    echo scmVars.GIT_COMMIT
+                    echo "${env.GIT_COMMIT}"
                 }
             }
         }
