@@ -51,10 +51,8 @@ pipeline {
                     }
                 }
             }
-        }
-        post {
-            failure {
-
+            post {
+                echo 'Cleanup org here'
             }
         }
 
@@ -72,7 +70,7 @@ pipeline {
     }
     post {
         always {
-            echo 'cleanup'
+            
         }
         failure {
             // notify users when the Pipeline fails
