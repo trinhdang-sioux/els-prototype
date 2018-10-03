@@ -29,8 +29,10 @@ pipeline {
     stages {
         stage('checkout SCM') {
             steps {
-                scmVars = checkout scm
-                GIT_COMMIT = scmVars.GIT_COMMIT
+                script {
+                    scmVars = checkout scm
+                    GIT_COMMIT = scmVars.GIT_COMMIT
+                }
             }
         }
 
