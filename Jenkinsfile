@@ -10,9 +10,14 @@ pipeline {
     environment {
         ARTIFACT_DIR = "Builds\\${env.BUILD_NUMBER}"
 
+        SFDC_USERNAME = ""
         HUB_ORG = "${env.HUB_ORG_DH}"
+        SFDC_HOST = "${env.SFDC_HOST_DH}"
+        JWT_KEY_CRED_ID = "${env.JWT_CRED_ID_DH}"
+        CONNECTED_APP_CONSUMER_KEY = "${env.CONNECTED_APP_CONSUMER_KEY_DH}"
+        CONNECTED_APP_JWT_KEY = credentials('JWT_KEY_CRED_ID')
 
-        TOOL = tool name: 'toolbelt', type: 'com.cloudbees.jenkins.plugins.customtools.CustomTool'
+        sfdx = "C:\\Program Files\\Salesforce CLI\\bin\\sfdx"
     }
 
     stages {
@@ -26,8 +31,13 @@ pipeline {
             stages {
                 stage('Authorize DEV HUB org') {
                     steps {
-                        echo HUB_ORG
-                        echo ARTIFACT_DIR
+                        echo 'Authorizing...'
+                        script {
+                            status = bat(returnStatus: true, script: "\"${sfdx}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile \"${CONNECTED_APP_JWT_KEY}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}")
+                            if (status != 0) {
+                                error 'Authorize DEV HUB org failed'
+                            }
+                        }
                     }
                 }
 
