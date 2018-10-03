@@ -91,7 +91,7 @@ pipeline {
                     steps {
                         script {
                             timeout(time: 120, unit: 'SECONDS') {
-                                rc = bat returnStatus: true, script: "\"${sfdx}\" force:apex:test:run --testlevel RunLocalTests --outputdir ${OUTPUT_TEST} --resultformat tap --targetusername ${SFDC_USERNAME}"
+                                rc = bat returnStatus: true, script: "\"${sfdx}\" force:apex:test:run --testlevel RunLocalTests --outputdir ${OUTPUT_TEST} --resultformat tap --codecoverage --targetusername ${SFDC_USERNAME}"
                                 if (rc != 0) {
                                     error 'Run APEX tests failed'
                                 }
@@ -150,7 +150,7 @@ pipeline {
                 allowMissing: false,
                 alwaysLinkToLastBuild: false,
                 keepAll: true,
-                reportDir: "${OUTPUT_REPORT}",
+                reportDir: "${OUTPUT_TEST}",
                 reportFiles: 'index.html',
                 reportName: 'RCov Report'
                 ]
