@@ -52,7 +52,9 @@ pipeline {
                 }
             }
             post {
-                echo 'Cleanup org here'
+                always {
+                    echo 'Cleanup org here'
+                }
             }
         }
 
