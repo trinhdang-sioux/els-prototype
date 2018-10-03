@@ -145,7 +145,7 @@ pipeline {
     }
     post {
         always {
-            echo 'Code coverage'
+            cleanWs
         }
         success {
             emailext (
