@@ -10,7 +10,7 @@ pipeline {
     environment {
         ARTIFACT_DIR = "Builds\\${env.BUILD_NUMBER}"
 
-        HUB_ORG = env.HUB_ORG_DH
+        HUB_ORG = "${env.HUB_ORG_DH}"
     }
 
     tools {
@@ -29,6 +29,7 @@ pipeline {
                 stage('Authorize DEV HUB org') {
                     steps {
                         echo HUB_ORG
+                        echo ARTIFACT_DIR
                     }
                 }
 
