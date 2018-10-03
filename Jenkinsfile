@@ -144,9 +144,6 @@ pipeline {
         }
     }
     post {
-        always {
-            cleanWs
-        }
         success {
             emailext (
                 subject: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
@@ -164,6 +161,11 @@ pipeline {
                 to: "khoa.nguyen@sioux.asia",
                 recipientProviders: [[$class: 'DevelopersRecipientProvider']]
             )
+        }
+        cleanup {
+            script {
+                cleanWs
+            }
         }
     }
 }
