@@ -1,5 +1,7 @@
 #!groovy
 
+def SFDC_USERNAME
+
 pipeline {
     agent any
 
@@ -10,7 +12,6 @@ pipeline {
     environment {
         ARTIFACT_DIR = "Builds\\${env.BUILD_NUMBER}"
 
-        SFDC_USERNAME = ""
         HUB_ORG = "${env.HUB_ORG_DH}"
         SFDC_HOST = "${env.SFDC_HOST_DH}"
         CONNECTED_APP_CONSUMER_KEY = "${env.CONNECTED_APP_CONSUMER_KEY_DH}"
