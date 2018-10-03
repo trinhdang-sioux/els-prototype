@@ -15,7 +15,7 @@ pipeline {
         SFDC_HOST = "${env.SFDC_HOST_DH}"
         JWT_KEY_CRED_ID = "${env.JWT_CRED_ID_DH}"
         CONNECTED_APP_CONSUMER_KEY = "${env.CONNECTED_APP_CONSUMER_KEY_DH}"
-        CONNECTED_APP_JWT_KEY = credentials('JWT_KEY_CRED_ID')
+        CONNECTED_APP_JWT_KEY = credentials('SALESFORCE_PRIVATE_KEY')
 
         sfdx = "C:\\Program Files\\Salesforce CLI\\bin\\sfdx"
     }
@@ -83,10 +83,7 @@ pipeline {
             echo 'Post always'
         }
         failure {
-            // notify users when the Pipeline fails
-            mail to: 'trinh.dang@sioux.asia',
-            subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
-            body: "Something is wrong with ${env.BUILD_URL}"
+            echo 'Email'
         }
     }
 }
