@@ -31,7 +31,7 @@ pipeline {
 
         stage('create output dir') {
             steps {
-                script: {
+                script {
                     status = bat returnStatus: true, script: "mkdir ${OUTPUT_DIR}"
                     if(status != 0) {
                         error "dir creation failed ${OUTPUT_DIR}"
