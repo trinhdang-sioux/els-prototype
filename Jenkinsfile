@@ -118,10 +118,7 @@ pipeline {
                         error 'package failed'
                     }
                     bat script: "dir /s /b mdapi_output_dir"
-                    status = zip zipFile: "${OUTPUT_ARTIFACT}", archive: false, dir: "${PACKAGE_DIR}"
-                    if(status != 0) {
-                        error 'package failed'
-                    }
+                    zip zipFile: "${OUTPUT_ARTIFACT}", archive: false, dir: "${PACKAGE_DIR}"
                 }
             }
         }
@@ -129,7 +126,7 @@ pipeline {
         stage('deploy to staging') {
             steps {
                 echo 'Deploying to STAGING...'
-                //TODO
+                //TODO mdapi:deploy
             }
         }
 
