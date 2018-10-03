@@ -9,6 +9,8 @@ pipeline {
 
     environment {
         OUTPUT_DIR = "Builds\\${env.BUILD_NUMBER}"
+        OUTPUT_TEST = "${OUTPUT_DIR}\\tests"
+        OUTPUT_ARTIFACT = "${OUTPUT_DIR}\\package.${env.GIT_REVISION}.${env.BUILD_NUMBER}.zip"
 
         SFDC_USERNAME = ""
         HUB_ORG = "${env.HUB_ORG_DH}"
@@ -32,9 +34,9 @@ pipeline {
         stage('create output dir') {
             steps {
                 script {
-                    status = bat returnStatus: true, script: "mkdir ${OUTPUT_DIR}"
+                    status = bat returnStatus: true, script: "mkdir ${OUTPUT_TEST}"
                     if(status != 0) {
-                        error "dir creation failed ${OUTPUT_DIR}"
+                        error "dir creation failed ${OUTPUT_TEST}"
                     }
                 }
             }
@@ -87,7 +89,7 @@ pipeline {
                     steps {
                         script {
                             timeout(time: 120, unit: 'SECONDS') {
-                                rc = bat returnStatus: true, script: "\"${sfdx}\" force:apex:test:run --testlevel RunLocalTests --outputdir ${OUTPUT_DIR}\\tests --resultformat tap --targetusername ${SFDC_USERNAME}"
+                                rc = bat returnStatus: true, script: "\"${sfdx}\" force:apex:test:run --testlevel RunLocalTests --outputdir ${OUTPUT_TEST} --resultformat tap --targetusername ${SFDC_USERNAME}"
                                 if (rc != 0) {
                                     error 'Run APEX tests failed'
                                 }
@@ -116,7 +118,7 @@ pipeline {
                         error 'package failed'
                     }
                     bat script: "dir /s /b mdapi_output_dir"
-                    status = zip zipFile: "${OUTPUT_DIR}\\${env.BUILD_NUMBER}.zip", archive: false, dir: "${PACKAGE_DIR}"
+                    status = zip zipFile: "${OUTPUT_ARTIFACT}", archive: false, dir: "${PACKAGE_DIR}"
                     if(status != 0) {
                         error 'package failed'
                     }
@@ -133,7 +135,7 @@ pipeline {
 
         stage('collect reports') {
             steps {
-                archiveArtifacts artifacts: "${OUTPUT_DIR}/**/*.zip", fingerprint: true
+                archiveArtifacts artifacts: "${OUTPUT_ARTIFACT}", fingerprint: true
                 junit keepLongStdio: true, testResults: "${OUTPUT_DIR}/**/*-junit.xml"
             }
         }
