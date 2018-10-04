@@ -17,7 +17,7 @@ pipeline {
 
         SFDC_URL = "https://login.salesforce.com"
         SFDC_USERNAME = "trinh.dang@sioux.asia"
-        SFDX_ALIAS = "CI"
+        SFDC_ALIAS = "CI"
 
         SFDC_SANDBOX_URL = "https://test.salesforce.com"
         SFDC_SANDBOX_USERNAME = "trinh.dang@sioux.asia.dev"
