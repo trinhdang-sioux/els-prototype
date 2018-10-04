@@ -15,11 +15,6 @@ pipeline {
         OUTPUT_TEST = "${OUTPUT_DIR}\\tests"
         OUTPUT_ARTIFACT = "${OUTPUT_DIR}\\artifacts"
 
-        SFDC_URL = "https://login.salesforce.com"
-        SFDC_USERNAME = "trinh.dang@sioux.asia"
-        SFDC_ALIAS = "CI"
-        SFDC_CONNECTED_APP = "3MVG9YDQS5WtC11qeOgeko3X5nfieoVD3Lg_0DhCjdjB2MPPWhv9JZugQNKrPi1esWVOm6_6Y3zPu3iI0KTbf"
-
         SFDC_SANDBOX_URL = "https://test.salesforce.com"
         SFDC_SANDBOX_USERNAME = "trinh.dang@sioux.asia.dev"
         SFDC_SANDBOX_ALIAS = "DEV"
@@ -31,83 +26,74 @@ pipeline {
     }
 
     stages {
-        stage('create output dir') {
+        stage('prepare') {
             steps {
                 script {
                     deleteDir()
                     bat script: "mkdir ${OUTPUT_TEST}"
                     bat script: "mkdir ${OUTPUT_ARTIFACT}"
-                }
-            }
-        }
 
-        stage('checkout SCM') {
-            steps {
-                script {
                     scmVars = checkout scm
                     COMMIT_NUMBER = scmVars.GIT_COMMIT
                 }
             }
         }
 
-        stage('build and test') {
-            stages {
-                stage('authorize dev hub org') {
+        stage('build') {
+            environment {
+                SFDC_URL = "https://login.salesforce.com"
+                SFDC_USERNAME = "trinh.dang@sioux.asia"
+                SFDC_ALIAS = "CI"
+                SFDC_CONNECTED_APP = "3MVG9YDQS5WtC11qeOgeko3X5nfieoVD3Lg_0DhCjdjB2MPPWhv9JZugQNKrPi1esWVOm6_6Y3zPu3iI0KTbf"
+            }
+            stages{
+                stage('authorize') {
                     steps {
                         script {
                             status = bat returnStatus: true, script: "\"${sfdx}\" force:auth:jwt:grant --clientid ${SFDC_CONNECTED_APP} --username ${SFDC_USERNAME} --jwtkeyfile \"${CONNECTED_APP_JWT_KEY}\" --instanceurl ${SFDC_URL} --setdefaultdevhubusername"
                             if (status != 0) {
-                                error 'Org authorization failed'
+                                error 'authorize org failed'
                             }
                         }
                     }
                 }
-
-                stage('create scratch org') {
+                stage('create org') {
                     steps {
                         script {
                             stdout = bat returnStatus: true, script: "\"${sfdx}\" force:org:create --definitionfile config/project-scratch-def.json --json --setalias ${SFDC_ALIAS}"
                             if (status != 0) {
-                                error 'Org authorization failed'
+                                error 'create org failed'
                             }
                         }
                     }
                 }
-
-                stage('push source to scratch org') {
+                stage('push and test') {
                     steps {
                         script {
                             status = bat returnStatus: true, script: "\"${sfdx}\" force:source:push --targetusername ${SFDC_ALIAS}"
                             if (status != 0) {
-                                    error 'Org push failed'
+                                    error 'push org failed'
                             }
                             status = bat returnStatus: true, script: "\"${sfdx}\" force:user:permset:assign --targetusername ${SFDC_ALIAS} --permsetname ELS"
                             if (status != 0) {
-                                error 'Org permset:assign failed'
+                                error 'permset:assign org failed'
                             }
-                        }
-                    }
-                }
-
-                stage('run apex tests') {
-                    steps {
-                        script {
                             timeout(time: 120, unit: 'SECONDS') {
-                                rc = bat returnStatus: true, script: "\"${sfdx}\" force:apex:test:run --testlevel RunLocalTests --outputdir ${OUTPUT_TEST} --resultformat tap --codecoverage --targetusername ${SFDC_ALIAS}"
-                                if (rc != 0) {
-                                    error 'Run APEX tests failed'
+                                status = bat returnStatus: true, script: "\"${sfdx}\" force:apex:test:run --testlevel RunLocalTests --outputdir ${OUTPUT_TEST} --resultformat tap --codecoverage --targetusername ${SFDC_ALIAS}"
+                                if (status != 0) {
+                                    error 'run tests failed'
                                 }
                             }
                         }
                     }
                 }
-            }
-            post {
-                always {
-                    script {
-                        status = bat returnStatus: true, script: "\"${sfdx}\" force:org:delete --targetusername ${SFDC_ALIAS} --noprompt"
-                        if (status != 0) { 
-                            error 'Cleanup failed'
+                post {
+                    always {
+                        script {
+                            status = bat returnStatus: true, script: "\"${sfdx}\" force:org:delete --targetusername ${SFDC_ALIAS} --noprompt"
+                            if (status != 0) { 
+                                error 'cleanup failed'
+                            }
                         }
                     }
                 }
