@@ -134,6 +134,7 @@ pipeline {
 
         stage('deploy to staging') {
             environment {
+                PACKAGE_DIR = "mdapi_output_dir"
                 PACKAGE_ZIP = "${OUTPUT_ARTIFACT}\\${COMMIT_NUMBER}.${BUILD_NUMBER}.zip"
             }
             stages {
@@ -150,7 +151,7 @@ pipeline {
                 stage('validate deployment') {
                     steps {
                         script {
-                            status = bat returnStatus: true, script: "\"${sfdx}\" force:mdapi:deploy --zipfile ${PACKAGE_ZIP} --testlevel RunAllTestsInOrg --targetusername ${SFDC_SANDBOX_ALIAS} --wait 10 --checkonly"
+                            status = bat returnStatus: true, script: "\"${sfdx}\" force:mdapi:deploy --deploydir ${PACKAGE_DIR} --testlevel RunAllTestsInOrg --targetusername ${SFDC_SANDBOX_ALIAS} --wait 10 --checkonly"
                             if(status != 0) {
                                 error 'validate deployment failed'
                             }
@@ -161,7 +162,7 @@ pipeline {
                 stage('deploy') {
                     steps {
                         script {
-                            status = bat returnStatus: true, script: "\"${sfdx}\" force:mdapi:deploy --zipfile ${PACKAGE_ZIP} --targetusername ${SFDC_SANDBOX_ALIAS} --wait 10"
+                            status = bat returnStatus: true, script: "\"${sfdx}\" force:mdapi:deploy --deploydir ${PACKAGE_DIR} --targetusername ${SFDC_SANDBOX_ALIAS} --wait 10"
                             if(status != 0) {
                                 error 'deploy failed'
                             }
