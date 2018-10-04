@@ -18,13 +18,13 @@ pipeline {
         SFDC_URL = "https://login.salesforce.com"
         SFDC_USERNAME = "trinh.dang@sioux.asia"
         SFDC_ALIAS = "CI"
+        SFDC_CONNECTED_APP = "3MVG9YDQS5WtC11qeOgeko3X5nfieoVD3Lg_0DhCjdjB2MPPWhv9JZugQNKrPi1esWVOm6_6Y3zPu3iI0KTbf"
 
         SFDC_SANDBOX_URL = "https://test.salesforce.com"
         SFDC_SANDBOX_USERNAME = "trinh.dang@sioux.asia.dev"
         SFDC_SANDBOX_ALIAS = "DEV"
+        SFDC_SANDBOX_CONNECTED_APP = "3MVG99S6MzYiT5k9Zi_aoc.dquSwd8HXfN0ZVk69iX2cPZpz3v5tVgOtLTN454hVdcZxisIa9u7SW3IZxWiHx"
 
-        // TODO change this to secrect text also
-        CONNECTED_APP_CONSUMER_KEY = "3MVG9YDQS5WtC11qeOgeko3X5nfieoVD3Lg_0DhCjdjB2MPPWhv9JZugQNKrPi1esWVOm6_6Y3zPu3iI0KTbf"
         CONNECTED_APP_JWT_KEY = credentials("SALESFORCE_PRIVATE_KEY")
 
         sfdx = "C:\\Program Files\\Salesforce CLI\\bin\\sfdx"
@@ -55,7 +55,7 @@ pipeline {
                 stage('authorize dev hub org') {
                     steps {
                         script {
-                            status = bat returnStatus: true, script: "\"${sfdx}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${SFDC_USERNAME} --jwtkeyfile \"${CONNECTED_APP_JWT_KEY}\" --instanceurl ${SFDC_URL} --setdefaultdevhubusername"
+                            status = bat returnStatus: true, script: "\"${sfdx}\" force:auth:jwt:grant --clientid ${SFDC_CONNECTED_APP} --username ${SFDC_USERNAME} --jwtkeyfile \"${CONNECTED_APP_JWT_KEY}\" --instanceurl ${SFDC_URL} --setdefaultdevhubusername"
                             if (status != 0) {
                                 error 'Org authorization failed'
                             }
@@ -137,7 +137,7 @@ pipeline {
                 stage('authorize sandbox org') {
                     steps {
                         script {
-                            status = bat returnStatus: true, script: "\"${sfdx}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${SFDC_SANDBOX_USERNAME} --jwtkeyfile \"${CONNECTED_APP_JWT_KEY}\" --instanceurl ${SFDC_SANDBOX_URL} --setalias ${SFDC_SANDBOX_ALIAS}"
+                            status = bat returnStatus: true, script: "\"${sfdx}\" force:auth:jwt:grant --clientid ${SFDC_SANDBOX_CONNECTED_APP} --username ${SFDC_SANDBOX_USERNAME} --jwtkeyfile \"${CONNECTED_APP_JWT_KEY}\" --instanceurl ${SFDC_SANDBOX_URL} --setalias ${SFDC_SANDBOX_ALIAS}"
                             if(status != 0) {
                                 error 'authorize sandbox failed'
                             }
