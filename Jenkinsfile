@@ -55,7 +55,7 @@ pipeline {
                 stage('authorize dev hub org') {
                     steps {
                         script {
-                            status = bat returnStatus: true, script: "\"${sfdx}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${SFDC_USERNAME} --jwtkeyfile \"${CONNECTED_APP_JWT_KEY}\" -instanceurl ${SFDC_URL} --setdefaultdevhubusername"
+                            status = bat returnStatus: true, script: "\"${sfdx}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${SFDC_USERNAME} --jwtkeyfile \"${CONNECTED_APP_JWT_KEY}\" --setdefaultdevhubusername -instanceurl ${SFDC_URL}"
                             if (status != 0) {
                                 error 'Org authorization failed'
                             }
