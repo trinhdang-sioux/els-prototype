@@ -67,41 +67,39 @@ pipeline {
                         }
                     }
                 }
-                stages {
-                    stage('push org') {
-                        steps {
-                            script {
-                                status = bat returnStatus: true, script: "\"${sfdx}\" force:source:push --targetusername ${SFDC_ALIAS}"
-                                if (status != 0) {
-                                        error 'push org failed'
-                                }
-                                status = bat returnStatus: true, script: "\"${sfdx}\" force:user:permset:assign --targetusername ${SFDC_ALIAS} --permsetname ELS"
-                                if (status != 0) {
-                                    error 'permset:assign org failed'
-                                }
+                stage('push org') {
+                    steps {
+                        script {
+                            status = bat returnStatus: true, script: "\"${sfdx}\" force:source:push --targetusername ${SFDC_ALIAS}"
+                            if (status != 0) {
+                                    error 'push org failed'
+                            }
+                            status = bat returnStatus: true, script: "\"${sfdx}\" force:user:permset:assign --targetusername ${SFDC_ALIAS} --permsetname ELS"
+                            if (status != 0) {
+                                error 'permset:assign org failed'
                             }
                         }
                     }
-                    stage('test') {
-                        steps {
-                            script {
-                                timeout(time: 120, unit: 'SECONDS') {
-                                    status = bat returnStatus: true, script: "\"${sfdx}\" force:apex:test:run --testlevel RunLocalTests --outputdir ${OUTPUT_TEST} --resultformat tap --codecoverage --targetusername ${SFDC_ALIAS}"
-                                    if (status != 0) {
-                                        error 'run tests failed'
-                                    }
+                }
+                stage('test') {
+                    steps {
+                        script {
+                            timeout(time: 120, unit: 'SECONDS') {
+                                status = bat returnStatus: true, script: "\"${sfdx}\" force:apex:test:run --testlevel RunLocalTests --outputdir ${OUTPUT_TEST} --resultformat tap --codecoverage --targetusername ${SFDC_ALIAS}"
+                                if (status != 0) {
+                                    error 'run tests failed'
                                 }
                             }
                         }
                     }
                 }
-                post {
-                    always {
-                        script {
-                            status = bat returnStatus: true, script: "\"${sfdx}\" force:org:delete --targetusername ${SFDC_ALIAS} --noprompt"
-                            if (status != 0) { 
-                                error 'cleanup failed'
-                            }
+            }
+            post {
+                always {
+                    script {
+                        status = bat returnStatus: true, script: "\"${sfdx}\" force:org:delete --targetusername ${SFDC_ALIAS} --noprompt"
+                        if (status != 0) { 
+                            error 'cleanup failed'
                         }
                     }
                 }
