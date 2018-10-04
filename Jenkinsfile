@@ -127,9 +127,11 @@ pipeline {
                 }
                 stage('authorize') {
                     steps {
-                        status = bat returnStatus: true, script: "\"${sfdx}\" force:auth:jwt:grant --clientid ${SFDC_SANDBOX_CONNECTED_APP} --username ${SFDC_SANDBOX_USERNAME} --jwtkeyfile \"${CONNECTED_APP_JWT_KEY}\" --instanceurl ${SFDC_SANDBOX_URL} --setalias ${SFDC_SANDBOX_ALIAS}"
-                        if(status != 0) {
-                            error 'authorize sandbox failed'
+                        script {
+                            status = bat returnStatus: true, script: "\"${sfdx}\" force:auth:jwt:grant --clientid ${SFDC_SANDBOX_CONNECTED_APP} --username ${SFDC_SANDBOX_USERNAME} --jwtkeyfile \"${CONNECTED_APP_JWT_KEY}\" --instanceurl ${SFDC_SANDBOX_URL} --setalias ${SFDC_SANDBOX_ALIAS}"
+                            if(status != 0) {
+                                error 'authorize sandbox failed'
+                            }
                         }
                     }
                 }
