@@ -161,10 +161,7 @@ pipeline {
                     post {
                         always {
                             script {
-                                status = bat script: "\"${sfdx}\" force:auth:logout --targetusername ${SFDC_SANDBOX_ALIAS} --noprompt"
-                                if(status != 0) {
-                                    error 'cleanup failed'
-                                }
+                                bat script: "\"${sfdx}\" force:auth:logout --targetusername ${SFDC_SANDBOX_ALIAS} --noprompt"
                             }
                         }
                     }
