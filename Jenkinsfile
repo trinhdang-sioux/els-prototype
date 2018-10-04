@@ -133,6 +133,9 @@ pipeline {
         }
 
         stage('deploy to staging') {
+            environment {
+                PACKAGE_ZIP = "${OUTPUT_ARTIFACT}\\${COMMIT_NUMBER}.${BUILD_NUMBER}.zip"
+            }
             stages {
                 stage('authorize sandbox org') {
                     steps {
