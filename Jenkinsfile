@@ -15,10 +15,10 @@ pipeline {
         OUTPUT_TEST = "${OUTPUT_DIR}\\tests"
         OUTPUT_ARTIFACT = "${OUTPUT_DIR}\\artifacts"
 
-        HUB_ORG = "${env.HUB_ORG_DH}"
-        SFDC_HOST = "${env.SFDC_HOST_DH}"
-        CONNECTED_APP_CONSUMER_KEY = "${env.CONNECTED_APP_CONSUMER_KEY_DH}"
-        CONNECTED_APP_JWT_KEY = credentials("${env.JWT_CRED_ID_DH}")
+        HUB_ORG_USERNAME = "trinh.dang@sioux.asia"
+        SFDC_HOST = "https://login.salesforce.com"
+        CONNECTED_APP_CONSUMER_KEY = "3MVG9YDQS5WtC11qeOgeko3X5nfieoVD3Lg_0DhCjdjB2MPPWhv9JZugQNKrPi1esWVOm6_6Y3zPu3iI0KTbf"
+        CONNECTED_APP_JWT_KEY = credentials("SALESFORCE_PRIVATE_KEY")
         SFDC_USERNAME = ""
 
         sfdx = "C:\\Program Files\\Salesforce CLI\\bin\\sfdx"
@@ -49,7 +49,7 @@ pipeline {
                 stage('authorize dev hub org') {
                     steps {
                         script {
-                            status = bat returnStatus: true, script: "\"${sfdx}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile \"${CONNECTED_APP_JWT_KEY}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
+                            status = bat returnStatus: true, script: "\"${sfdx}\" force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG_USERNAME} --jwtkeyfile \"${CONNECTED_APP_JWT_KEY}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
                             if (status != 0) {
                                 error 'Org authorization failed'
                             }
