@@ -15,11 +15,6 @@ pipeline {
         OUTPUT_TEST = "${OUTPUT_DIR}\\tests"
         OUTPUT_ARTIFACT = "${OUTPUT_DIR}\\artifacts"
 
-        SFDC_SANDBOX_URL = "https://test.salesforce.com"
-        SFDC_SANDBOX_USERNAME = "trinh.dang@sioux.asia.dev"
-        SFDC_SANDBOX_ALIAS = "DEV"
-        SFDC_SANDBOX_CONNECTED_APP = "3MVG99S6MzYiT5k9Zi_aoc.dquSwd8HXfN0ZVk69iX2cPZpz3v5tVgOtLTN454hVdcZxisIa9u7SW3IZxWiHx"
-
         CONNECTED_APP_JWT_KEY = credentials("SALESFORCE_PRIVATE_KEY")
 
         sfdx = "C:\\Program Files\\Salesforce CLI\\bin\\sfdx"
@@ -39,7 +34,7 @@ pipeline {
             }
         }
 
-        stage('build') {
+        stage('build and test') {
             environment {
                 SFDC_URL = "https://login.salesforce.com"
                 SFDC_USERNAME = "trinh.dang@sioux.asia"
@@ -106,72 +101,73 @@ pipeline {
             }
         }
 
-        stage('package') {
+        stage('package and deploy') {
             environment {
                 PACKAGE_DIR = "mdapi_output_dir"
                 PACKAGE_NAME = "els-protoype"
                 PACKAGE_ZIP = "${OUTPUT_ARTIFACT}\\${COMMIT_NUMBER}.${BUILD_NUMBER}.zip"
-            }
-            steps {
-                script {
-                    status = bat returnStatus: true, script: "\"${sfdx}\" force:source:convert --outputdir  ${PACKAGE_DIR}/ --packagename ${PACKAGE_NAME}"
-                    if(status != 0) {
-                        error 'package failed'
-                    }
-                    bat script: "dir /s /b mdapi_output_dir"
-                    zip zipFile: "${PACKAGE_ZIP}", archive: false, dir: "${PACKAGE_DIR}"
-                }
-            }
-        }
 
-        stage('deploy to staging') {
-            environment {
-                PACKAGE_DIR = "mdapi_output_dir"
-                PACKAGE_ZIP = "${OUTPUT_ARTIFACT}\\${COMMIT_NUMBER}.${BUILD_NUMBER}.zip"
+                SFDC_SANDBOX_URL = "https://test.salesforce.com"
+                SFDC_SANDBOX_USERNAME = "trinh.dang@sioux.asia.dev"
+                SFDC_SANDBOX_ALIAS = "DEV"
+                SFDC_SANDBOX_CONNECTED_APP = "3MVG99S6MzYiT5k9Zi_aoc.dquSwd8HXfN0ZVk69iX2cPZpz3v5tVgOtLTN454hVdcZxisIa9u7SW3IZxWiHx"
             }
             stages {
-                stage('authorize sandbox org') {
+                stage('package') {
                     steps {
                         script {
-                            status = bat returnStatus: true, script: "\"${sfdx}\" force:auth:jwt:grant --clientid ${SFDC_SANDBOX_CONNECTED_APP} --username ${SFDC_SANDBOX_USERNAME} --jwtkeyfile \"${CONNECTED_APP_JWT_KEY}\" --instanceurl ${SFDC_SANDBOX_URL} --setalias ${SFDC_SANDBOX_ALIAS}"
+                            status = bat returnStatus: true, script: "\"${sfdx}\" force:source:convert --outputdir  ${PACKAGE_DIR}/ --packagename ${PACKAGE_NAME}"
                             if(status != 0) {
-                                error 'authorize sandbox failed'
+                                error 'package failed'
+                            }
+                            bat script: "dir /s /b mdapi_output_dir"
+                            zip zipFile: "${PACKAGE_ZIP}", archive: false, dir: "${PACKAGE_DIR}"
+                        }
+                    }
+                }
+                stage('authorize') {
+                    steps {
+                        status = bat returnStatus: true, script: "\"${sfdx}\" force:auth:jwt:grant --clientid ${SFDC_SANDBOX_CONNECTED_APP} --username ${SFDC_SANDBOX_USERNAME} --jwtkeyfile \"${CONNECTED_APP_JWT_KEY}\" --instanceurl ${SFDC_SANDBOX_URL} --setalias ${SFDC_SANDBOX_ALIAS}"
+                        if(status != 0) {
+                            error 'authorize sandbox failed'
+                        }
+                    }
+                }
+                stage('validate and deloy') {
+                    stages {
+                        stage('validate') {
+                            steps {
+                                script {
+                                    status = bat returnStatus: true, script: "\"${sfdx}\" force:mdapi:deploy --deploydir ${PACKAGE_DIR} --testlevel RunAllTestsInOrg --targetusername ${SFDC_SANDBOX_ALIAS} --wait 10 --checkonly"
+                                    if(status != 0) {
+                                        error 'validate deployment failed'
+                                    }
+                                }
+                            }
+                        }
+                        stage('deploy') {
+                            steps {
+                                script {
+                                    status = bat returnStatus: true, script: "\"${sfdx}\" force:mdapi:deploy --deploydir ${PACKAGE_DIR} --targetusername ${SFDC_SANDBOX_ALIAS} --wait 10"
+                                    if(status != 0) {
+                                        error 'deploy failed'
+                                    }
+                                }
                             }
                         }
                     }
                 }
-                stage('validate deployment') {
-                    steps {
+                post {
+                    always {
                         script {
-                            status = bat returnStatus: true, script: "\"${sfdx}\" force:mdapi:deploy --deploydir ${PACKAGE_DIR} --testlevel RunAllTestsInOrg --targetusername ${SFDC_SANDBOX_ALIAS} --wait 10 --checkonly"
-                            if(status != 0) {
-                                error 'validate deployment failed'
-                            }
-                        }
-                    }
-                }
 
-                stage('deploy') {
-                    steps {
-                        script {
-                            status = bat returnStatus: true, script: "\"${sfdx}\" force:mdapi:deploy --deploydir ${PACKAGE_DIR} --targetusername ${SFDC_SANDBOX_ALIAS} --wait 10"
-                            if(status != 0) {
-                                error 'deploy failed'
-                            }
                         }
-                    }
-                }
-            }
-            post {
-                always {
-                    script {
-                        bat script: "\"${sfdx}\" force:auth:logout --targetusername ${SFDC_SANDBOX_ALIAS} --noprompt"
                     }
                 }
             }
         }
 
-        stage('collect reports') {
+        stage('artifact and report') {
             steps {
                 archiveArtifacts artifacts: "${OUTPUT_ARTIFACT}/*.*", fingerprint: true
                 junit keepLongStdio: true, testResults: "${OUTPUT_DIR}/**/*-junit.xml"
