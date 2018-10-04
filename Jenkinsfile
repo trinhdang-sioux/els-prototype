@@ -67,21 +67,29 @@ pipeline {
                         }
                     }
                 }
-                stage('push and test') {
-                    steps {
-                        script {
-                            status = bat returnStatus: true, script: "\"${sfdx}\" force:source:push --targetusername ${SFDC_ALIAS}"
-                            if (status != 0) {
-                                    error 'push org failed'
-                            }
-                            status = bat returnStatus: true, script: "\"${sfdx}\" force:user:permset:assign --targetusername ${SFDC_ALIAS} --permsetname ELS"
-                            if (status != 0) {
-                                error 'permset:assign org failed'
-                            }
-                            timeout(time: 120, unit: 'SECONDS') {
-                                status = bat returnStatus: true, script: "\"${sfdx}\" force:apex:test:run --testlevel RunLocalTests --outputdir ${OUTPUT_TEST} --resultformat tap --codecoverage --targetusername ${SFDC_ALIAS}"
+                stages {
+                    stage('push org') {
+                        steps {
+                            script {
+                                status = bat returnStatus: true, script: "\"${sfdx}\" force:source:push --targetusername ${SFDC_ALIAS}"
                                 if (status != 0) {
-                                    error 'run tests failed'
+                                        error 'push org failed'
+                                }
+                                status = bat returnStatus: true, script: "\"${sfdx}\" force:user:permset:assign --targetusername ${SFDC_ALIAS} --permsetname ELS"
+                                if (status != 0) {
+                                    error 'permset:assign org failed'
+                                }
+                            }
+                        }
+                    }
+                    stage('test') {
+                        steps {
+                            script {
+                                timeout(time: 120, unit: 'SECONDS') {
+                                    status = bat returnStatus: true, script: "\"${sfdx}\" force:apex:test:run --testlevel RunLocalTests --outputdir ${OUTPUT_TEST} --resultformat tap --codecoverage --targetusername ${SFDC_ALIAS}"
+                                    if (status != 0) {
+                                        error 'run tests failed'
+                                    }
                                 }
                             }
                         }
