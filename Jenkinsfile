@@ -122,7 +122,7 @@ pipeline {
             }
             steps {
                 script {
-                    status = bat returnStatus: true, script: "\"${sfdx}\" force:source:convert --deploydir  ${PACKAGE_DIR}/ --packagename ${PACKAGE_NAME}"
+                    status = bat returnStatus: true, script: "\"${sfdx}\" force:source:convert --outputdir  ${PACKAGE_DIR}/ --packagename ${PACKAGE_NAME}"
                     if(status != 0) {
                         error 'package failed'
                     }
